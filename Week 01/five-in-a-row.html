@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>五子棋</title>
+        <style>
+            .cell{
+                width: 50px;
+                height: 50px;
+                background-color: rgb(189 150 34);
+                border: 1px solid rgb(226 221 221);
+                display: inline-flex;
+                vertical-align: middle;
+                justify-content: center;
+                align-items: center;
+                font-size: 25px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="box"></div>
+        <script>
+            let gobang = [
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+            ];
+
+            let five = 1;
+            gobang[7*15 + 7] = 1;
+            gobang[6*15 + 8] = 2;
+
+            function show(){
+                let box = document.getElementById('box');
+                let whiteSide = `<div id="whiteSide" style="width: 25px; height: 25px;background-color: white;border-radius: 50%;"></div>`;//白棋
+                let blackSide = `<div id="blackSide" style="width: 25px; height: 25px;background-color: black;border-radius: 50%;"></div>`;//黑棋
+                box.innerHTML = "";
+                for (let i = 0; i < 15; i++) {
+                    for (let j = 0; j < 15; j++) {
+                        let cell = document.createElement('div');
+                        cell.classList.add('cell');
+                        cell.innerHTML = 
+                            gobang[i*15 + j] == 2 ? whiteSide:
+                            gobang[i*15 + j] == 1 ? blackSide:"";
+                        cell.addEventListener("click",()=>userMove(i,j));
+                        box.appendChild(cell);
+                    }
+                    box.appendChild(document.createElement("br"));
+                }
+            }
+
+            function userMove(i,j){
+                console.log([i,j]);//点击了i行j列
+                if(gobang[i*15 + j] !== 0){
+                    alert("不能落在相同的位置！");
+                    return;
+                }
+                gobang[i*15 + j] = five;
+                if(CheckWin(i,j)){
+                    alert(five == 2 ? "whiteSide is winner!": "blackSide is winner!");
+                }
+                five = 3 - five;
+                show();
+            }
+
+            function CheckWin(xIndex, yIndex) {
+                let max = 0;
+                let tempXIndex = xIndex;
+                let tempYIndex = yIndex;
+                // 三维数组记录横向，纵向，左斜，右斜的移动
+                let dir = [
+                    // 横向
+                    [ [-1, 0]  , [1, 0 ] ],
+                    // 竖着
+                    [ [ 0, -1 ], [ 0, 1 ] ],
+                    // 左斜
+                    [ [ -1, -1 ], [ 1, 1 ] ],
+                    // 右斜
+                    [ [ 1, -1 ], [ -1, 1 ]]
+                ]
+                        
+         
+                for (let i = 0; i < 4; i++) {
+                    let count = 1;
+                    //j为0,1分别为棋子的两边方向，比如对于横向的时候，j=0,表示下棋位子的左边，j=1的时候表示右边
+                    for (let j = 0; j < 2; j++) {
+                        let flag = true;
+                        /**
+                         while语句中为一直向某一个方向遍历
+                         有相同颜色的棋子的时候，Count++
+                         否则置flag为false，结束该该方向的遍历
+                         **/
+                        while (flag) {
+                            tempXIndex = tempXIndex + dir[i][j][0];
+                            tempYIndex = tempYIndex + dir[i][j][1];
+         
+                            //这里加上棋盘大小的判断，这里我设置的棋盘大小为20 具体可根据实际情况设置 防止越界
+                            if (tempXIndex >= 0 && tempXIndex <= 15 && tempYIndex >= 0 && tempYIndex <= 15) {
+                                if ((gobang[tempXIndex* 15 + tempYIndex] == gobang[xIndex*15 + yIndex])) {
+                                    count++;
+                                }
+                                else
+                                    flag = false;
+                            }else{
+                                flag = false;
+                            }
+                            
+                        }
+                        tempXIndex = xIndex;
+                        tempYIndex = yIndex;
+                    }
+         
+                    if (count >= 5) {
+                        max = 1;
+                        break;
+                    } else
+                        max = 0;
+                }
+                if (max == 1)
+                    return true;
+                else
+                    return false;
+            }
+            show();            
+
+        </script>
+    </body>
+</html>

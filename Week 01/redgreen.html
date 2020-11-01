@@ -1,0 +1,160 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>redgreen</title>
+        <style type="text/css">
+            div{
+                width: 100px;
+                height: 100px;
+                background-color: gray;
+                display: inline-block;
+                border-radius: 50%;
+                margin: 30px;
+            }
+            .green.light{
+                background-color: green;
+            }
+            .yellow.light{
+                background-color: yellow;
+            }
+            .red.light{
+                background-color: red;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="green"></div>
+        <div class="yellow"></div>
+        <div class="red"></div>
+
+        <button id="next">next</button>
+
+        <script>
+            //color is green,yellow,red
+            function changeColor(color){
+                var lights = document.getElementsByTagName('div');
+                for (let i = 0; i < 3; i++) {
+                    lights[i].classList.remove("light") 
+                }
+                document.getElementsByClassName(color)[0].classList.add('light')
+            }
+            // ///callback function => base///
+            // function go(){
+            //     changeColor("green");
+            //     setTimeout(function(){
+            //         changeColor("yellow");
+            //         setTimeout(function(){
+            //             changeColor("red");
+            //             setTimeout(function(){ 
+            //                 go();
+            //             },5000)
+            //         },3000)
+            //     },10000);
+            // }
+
+            ///Promise function and callback function result is same,///
+            ///but Promise function is chain structure,it's better///
+
+
+            ///create a Promise function///
+            function sleep(t){
+                return new Promise((resolve,reject)=>{
+                    setTimeout(resolve,t);
+                })
+            }
+
+            //animation
+            function happen(element,eventName){
+                return new Promise((resolve,reject)=>{
+                    element.addEventListener(eventName,resolve,{once:true});
+                })
+            }
+            ///Promise.then can return another Promise function///
+            /*function go(){
+                changeColor("green");
+                sleep(1000).then(()=>{
+                    changeColor("yellow");
+                    return sleep(300);  
+                }).then(()=>{
+                    changeColor("red");
+                    return sleep(500);
+                }).then(go)
+            }*/
+
+            ///async : use "async", can use "await" a Promise function in fun///
+            // async function go(){
+            //     while(true){
+            //         /*
+            //         ///Time control light///
+            //         changeColor("green");
+            //         await sleep(1000);
+            //         changeColor("yellow");
+            //         await sleep(300);
+            //         changeColor("red");
+            //         await sleep(500);*/
+
+            //         ///User control light///
+            //         changeColor("green");
+            //         await happen(document.getElementById("next"),"click");
+            //         changeColor("yellow");
+            //         await happen(document.getElementById("next"),"click");
+            //         changeColor("red");
+            //         await happen(document.getElementById("next"),"click");
+            //     }
+            // }
+           
+            ///generator: is early ///
+            function* go(){
+                while(true){
+                    changeColor("green");
+                    yield sleep(1000);
+                    changeColor("yellow");
+                    yield sleep(300);
+                    changeColor("red");
+                    yield sleep(500);
+                }
+            }
+
+            ///generator can return a iterator(迭代器)///
+            ///simulate co///
+            function run(iterator){
+                let {value,done} = iterator.next();
+                if(done)
+                    return;
+                if(value instanceof Promise)
+                    value.then(()=>{
+                        run(iterator)
+                    })
+            }
+
+            
+            function co(generator){
+                return function(){
+                    return run(generator());
+                }
+            }
+
+            ///return [1,+00]///
+            async function* counter(){
+                let i = 0;
+                ///while(true) use infinite cycle///
+                while(true){
+                    await sleep(1000)
+                    yield i++;
+                }
+            }
+            ///async function avow///
+            (async function(){
+                for await(let v of counter()) {
+                    console.log(v);                    
+                }
+            })();
+
+
+            go = co(go);
+            go();
+
+            
+        </script>
+    </body>
+</html>

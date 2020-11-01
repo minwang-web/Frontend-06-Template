@@ -1,0 +1,90 @@
+
+mkdir learn_git  #创建文件夹
+cd learn_git  #切换目录
+ls -al #查看
+git init #初始化git仓库
+git config --global user.name "minmin" #配置仓库用户名
+git config --global user.email "mwang_m@163.com" #配置仓库邮箱
+git config --global --list #查看git配置信息
+clear //清空命令行
+
+git status  #查看git仓库处于什么状态
+pwd #查看当前目录的全路径
+git add test.html #跟踪文件，暂存文件，文件名可摁tab键补全
+git add . #把所有已修改的文件跟踪到暂存区
+git rm --cached  #可以取消暂存
+git status #此时查看状态，test文件可提交
+git commit -m "" #提交，-m 提交说明
+
+
+已修改   git add->    已暂存  git commit -> 已提交
+
+
+git log #显示历史所有的提交
+
+…or create a new repository on the command line   翻译：通过命令行创建新仓库
+echo "# learn_git" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/minwang-web/learn_git.git
+git push -u origin main
+
+//如何将本地代码同步到github远程仓库                
+…or push an existing repository from the command line
+ 翻译：通过命令行创建远程仓库
+git remote add origin git@github.com:minwang-web/learn_git.git
+ #创建远程仓库，origin表示远程仓库的一个代号可用其他自定义名字代替它
+git remote #验证远程仓库是否成功，成功会返回远程仓库的名字
+#配置SSH公私钥
+ssh-keygen -t rsa -C "mwang_m@163.com"
+cd /c/Users/mwang/.ssh #进入配置好的公私钥文件夹
+ls #查看目录下的文件，第一个是私钥，第二个是公钥
+cat id_rsa.pub  #查看公钥里的内容
+//复制公钥内容，切换到github页面
+头像下面点击settings(设置)->左侧点击SSH and GPG keys ->New SSH key ->第二个框粘贴公钥
+//到命令行，在。ssh目录下执行命令
+ssh -T git@github.com #查看本地与远程仓库是否建立了链接
+//验证成功后切换回git仓库
+cd /c/Users/mwang/learn_git
+git push -u origin master #推送GitHub
+//去GitHub仓库页面验证，刷新页面，点击仓库查看代码
+
+********************熟悉操作*********************************
+//test.html 新增内容保存后, git中切换到仓库目录下
+git add test.html
+git commit -m "add name"
+git push -u origin master
+
+
+git branch -M main
+git push -u origin main
+
+
+…or import code from another repository
+You can initialize this repository with code from a Subversion, Mercurial, or TFS project.
+
+
+//训练营作业提交
+//fork极客大学的仓库到自己的仓库,复制好仓库路径
+
+git上操作
+pwd #查看当前目录
+cd /d/Study/geek/Frontend-06-Template/week01  #切换到需要保存文件的目录
+git clone git@github.com:minwang-web/Frontend-01-Template.git #克隆仓库
+cd Frontend-01-Template #进入克隆下来的文件夹
+ls #查看文件
+cd week01 #进入第一周文件夹
+vi NOTE.md  #打开文件
+vim hello.py #新建一个python文件，进入文件后按i键可插入内容，写好之后按esc键，输入:wq保存，保存好以后其实还可以按ctrl+z（或按enter）来退出。
+//写完作业后提交作业
+git add . #添加所有的到暂存仓库
+git commit -m "week01 assignment" #提交作业
+
+复制自己链接，到极客仓库issue里找到提交作业的地方，按格式填好提交即可
+
+
+
+
+
