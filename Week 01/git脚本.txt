@@ -81,6 +81,7 @@ vim hello.py #新建一个python文件，进入文件后按i键可插入内容�
 //写完作业后提交作业
 git add . #添加所有的到暂存仓库
 git commit -m "week01 assignment" #提交作业
+git push -u origin master
 
 复制自己链接，到极客仓库issue里找到提交作业的地方，按格式填好提交即可
 
