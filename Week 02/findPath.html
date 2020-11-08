@@ -185,7 +185,7 @@
 
 				await sleep(5);
 				container.children[y * 100 + x].style.backgroundColor = "lightgreen";
-				
+
 				table[y * 100 + x] = pre; 
 				queue.give([x,y]);				
 			}
@@ -199,31 +199,31 @@
 				if (x === end[0] && y === end[1]) {
 					//
 					let path = [];
-					 while(x !== start[0] && y !== start[1]){
+					 while(x !== start[0] || y !== start[1]){
 						 path.push(map[y * 100 + x]);
 						 //[x,y] = table[y * 100 + x];
 						 [x, y] = table[y * 100 + x]
-						 await sleep(30);
 						 container.children[y * 100 + x].style.backgroundColor = "purple";
 					 }
 
 					 return path;
 				}
+				//上下左右，斜上下左右
 				await insert(x - 1, y, [x,y]);
 				await insert(x, y - 1, [x,y]);
-				await insert(x + 1, y), [x,y];
+				await insert(x + 1, y, [x,y]);
 				await insert(x , y + 1, [x,y]);
 
 				await insert(x - 1, y - 1, [x,y]);
 				await insert(x + 1, y - 1, [x,y]);
-				await insert(x - 1, y + 1), [x,y];
+				await insert(x - 1, y + 1, [x,y]);
 				await insert(x + 1, y + 1, [x,y]);
 			}
 			return null;
 		}
 
-		
+
 	</script> 
 
 </body>
-</html>
+</html> 
