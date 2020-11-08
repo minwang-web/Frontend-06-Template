@@ -24,11 +24,13 @@ git log #显示历史所有的提交
 
 …or create a new repository on the command line   翻译：通过命令行创建新仓库
 echo "# learn_git" >> README.md
-git init
+git init #初始化一个仓库
 git add README.md
 git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/minwang-web/learn_git.git
+git branch -M main #给仓库重命名
+git branch -D  hello #删除hello这个分支
+git remote add origin https://github.com/minwang-web/learn_git.git  #添加远程仓库
+git remote add origin geek https://github.com/minwang-web/learn_git.git #要添加一个新的远程仓库,可以指定一个简单的名字,以便将来引用,运行 
 git push -u origin main
 
 //如何将本地代码同步到github远程仓库                
@@ -81,7 +83,8 @@ vim hello.py #新建一个python文件，进入文件后按i键可插入内容�
 //写完作业后提交作业
 git add . #添加所有的到暂存仓库
 git commit -m "week01 assignment" #提交作业
-git push -u origin master
+git push -u origin main// 第一次推送时
+git push origin main// 第一次推送后，直接使用该命令即可推送修改
 
 复制自己链接，到极客仓库issue里找到提交作业的地方，按格式填好提交即可
 
