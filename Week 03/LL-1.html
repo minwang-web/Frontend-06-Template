@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>使用LL算法构建AST | LL词法分析</title>
+	</style>
+</head>
+<body>
+	<div id="container"></div>
+	<script type="text/javascript">
+		//Number:0-9  Whitespace  换行  四则运算
+		var regexp = /([0-9\.]+)|([ \t]+)|([\r\n]+)|(\*)|(\/)|(\+)|(\-)/g
+
+		var dictionary = ["Number","Whitespace","LineTerminator","*","/","+","-"];
+
+        //generator(生成器)
+        function* tokenize(source){
+            var result = null;   
+            var lastIndex = 0;         
+			while(true){
+                lastIndex = regexp.lastIndex;
+				//exec() 方法用于检索字符串中的正则表达式的匹配。
+                result = regexp.exec(source);
+                //没有匹配出来
+                if(!result) 
+                    break;
+                //匹配出来不认识的字符
+                if(regexp.lastIndex - lastIndex > result[0].length)
+                    break;
+                let token = {
+                    type:null,
+                    value:null
+                }
+
+				for (var i = 1; i <= dictionary.length; i++) {
+					if(result[i])
+						token.type = dictionary[i-1];					
+				}
+                token.value = result[0];
+                //yield是ES6的新关键字，使生成器函数执行暂停，
+                //yield关键字后面的表达式的值返回给生成器的调用者。实际返回一个IteratorResult（迭代器）对象
+                yield token;
+            }
+            yield {
+                type:"EOF"
+            }; 
+        }
+
+        let source = [];
+        //Iterator
+        for(let token of tokenize("10 + 25 - 2")){
+            if(token.type !== "Whitespace" && token.type !== "LineTerminator"){
+                source.push(token);
+            }                
+        }
+
+        function Expression(tokens){
+            if(source[0].type === "AdditiveExpression" && source[1] && source[1].type === "EOF"){
+                let node = {
+                    type: "Expression",
+                    children: [source.shift(),source.shift()]
+                }
+                source.unshift(node);
+                return node;
+            }
+            AdditiveExpression(source);
+            return Expression(source);
+        }
+
+        function AdditiveExpression(source){
+            if(source[0].type === "MultiplicativeExpression"){
+                let node = {
+                    type: "AdditiveExpression",
+                    children: [source[0]]//将source中的nuber放进去
+                }
+                source[0] = node;
+                return AdditiveExpression(source);
+            }
+            if(source[0].type === "AdditiveExpression" && source[1] && source[1].type === "+"){
+                let node = {
+                    type: "AdditiveExpression",
+                    operator:"+",
+                    children:[]
+                }
+                //shift() 方法用于把数组的第一个元素从其中删除，并返回第一个元素的值。
+                node.children.push(source.shift());
+                node.children.push(source.shift());
+                MultiplicativeExpression(source);
+                node.children.push(source.shift());
+                //unshift() 方法可向数组的开头添加一个或更多元素，并返回新的长度。
+                source.unshift(node);
+                return AdditiveExpression(source);
+            }
+
+            if(source[0].type === "AdditiveExpression" && source[1] && source[1].type === "-"){
+                let node = {
+                    type: "AdditiveExpression",
+                    operator:"-",
+                    children:[]
+                }
+                node.children.push(source.shift());
+                node.children.push(source.shift());
+                MultiplicativeExpression(source);
+                node.children.push(source.shift());
+                source.unshift(node);
+                return AdditiveExpression(source);
+            }
+
+            if(source[0].type === "AdditiveExpression"){
+                return source[0];
+            }
+            //第一次执行时，第一个数默认调用一次MultiplicativeExpression
+            MultiplicativeExpression(source);
+            return AdditiveExpression(source);            
+        }
+
+        //有意义的输入的 =>  token
+        function MultiplicativeExpression(source){            
+            if(source[0].type === "Number"){
+                let node = {
+                    type: "MultiplicativeExpression",
+                    children: [source[0]]//将source中的nuber放进去
+                }
+                source[0] = node;
+                return MultiplicativeExpression(source);
+            }
+            if(source[0].type === "MultiplicativeExpression" && source[1] && source[1].type === "*"){
+                let node = {
+                    type: "MultiplicativeExpression",
+                    operator:"*",
+                    children:[]
+                }
+                //shift() 方法用于把数组的第一个元素从其中删除，并返回第一个元素的值。
+                node.children.push(source.shift());
+                node.children.push(source.shift());
+                node.children.push(source.shift());
+                //unshift() 方法可向数组的开头添加一个或更多元素，并返回新的长度。
+                source.unshift(node);
+                return MultiplicativeExpression(source);
+            }
+
+            if(source[0].type === "MultiplicativeExpression" && source[1] && source[1].type === "/"){
+                let node = {
+                    type: "MultiplicativeExpression",
+                    operator:"/",
+                    children:[]
+                }
+                node.children.push(source.shift());
+                node.children.push(source.shift());
+                node.children.push(source.shift());
+                source.unshift(node);
+                return MultiplicativeExpression(source);
+            }
+
+            if(source[0].type === "MultiplicativeExpression"){
+                return source[0];
+            }
+            return MultiplicativeExpression(source);
+        }
+
+        console.log(Expression(source));
+
+
+	</script> 
+
+</body>
+</html> 
