@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>字典树</title>
+</head>
+<body>
+	<script type="text/javascript">
+		let $ = Symbol("$");//Symbol不可重复
+		class Trie {
+			constructor(){
+				this.root = Object.create(null);//用Object保存树结构，也可用map
+			}
+			//把一个字符串插入字典中
+			insert(word){
+				let node = this.root;
+				for(let i of word){
+					//如果子树不存在，先创建子树
+					if(!node[i])
+						node[i] = Object.create(null);
+					node = node[i];
+				}
+				//如果没有终止符，说明该字符串没出现过
+				if(!($ in node)){
+					node[$] = 0;
+				}
+				//记录下字符串出现的次数
+				node[$] ++
+			}
+			//出现次数最多的词
+			most(){
+				let max = 0;
+				let maxWorld = null;
+				let visit = (node,word)=>{
+					if(node[$] && node[$] > max){
+						max = node[$];
+						maxWorld = word;
+					}
+					for(let i in node){
+						visit(node[i], word + i)
+					}
+				}
+				visit(this.root, "");
+				console.log(maxWorld, max)
+			}
+		}
+
+		//随机生成任意长度的字符
+		function randomWord(length){
+			var str = "";
+			for(let i = 0;i < length; i++){
+				// String.fromCharCode() 方法返回由指定的 UTF-16 代码单元序列创建的字符串
+				//charCodeAt() 方法可返回指定位置的字符的 Unicode 编码。
+				str += String.fromCharCode(Math.random() * 26 + "a".charCodeAt(0));
+			}
+			return str;
+		}
+
+		let trie = new Trie();
+		//十万个长度为4的字符串
+		for(let i = 0; i < 100000; i++){
+			trie.insert(randomWord(4))
+		}
+
+		trie.most();
+	</script>
+
+</body>
+</html>
