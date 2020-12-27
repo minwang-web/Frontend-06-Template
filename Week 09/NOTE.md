@@ -74,6 +74,12 @@
 
 - 一旦选择匹配，就应该用选择器到元素上，形成computedStyle
 
+### 第七步 specificity的计算逻辑 ###
+
+- CSS规则是根据specificity和后来优先规则覆盖
+- specificity是四个元祖，越左边权重越高
+- 一个CSS规则的specificity根据包含的简单选择器相加而成
+
 
 
 
