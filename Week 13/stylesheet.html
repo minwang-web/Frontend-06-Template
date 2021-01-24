@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>styleSheet</title>
+</head>
+<style title="hello">
+    a::before{
+        color: pink;
+        content: "hello";
+    }
+</style>
+<link rel="stylesheet" title="x" href="data:text/css,p%7Bcolor:blue%7D">
+<a> world</a>
+<body>
+    <script>
+        
+        document.styleSheets[0].cssRules[0].style.color = 'lightgreen';//改变hello的颜色
+
+        //获取所有对a元素已经计算出来的属性
+        getComputedStyle(document.querySelector("a"));
+
+        //获取伪元素
+        getComputedStyle(document.querySelector("a"),"::before");
+        getComputedStyle(document.querySelector("a"),"::before").color;
+    </script>
+</body>
+</html>

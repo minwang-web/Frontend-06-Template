@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reverse</title>
+</head>
+<style>
+</style>
+<body>
+  <div id="a">
+      <span>1</span>
+      <p>2</p>
+      <p>3</p>
+      <div>4</div>
+  </div>
+<script>
+  
+  let element = document.getElementById('a');
+  
+//一般操作 初级
+//   function ReverseChildren(element){
+//     let children = Array.prototype.slice.call(element.childNodes); 
+//     //移除所有元素
+//     for(let child of children){
+//         element.removeChild(child);
+//     }
+
+//     children.reverse();
+
+//     for(let child of children){
+//         element.appendChild(child);
+//     }
+//   }
+ 
+//正常解法 二级
+// function ReverseChildren(element){
+//     var  l = element.childNodes.length;
+//     while(l-- > 0){
+//         element.appendChild(element.childNodes[l]);
+//     }
+// }
+
+//range 解 对element 操作两次  从dom看完美的结果
+//第一次 把所有节点拿下来，第二次把节点全都翻转好然后放上去；最少需要两次DOM操作
+//相比前两种，对DOM树的节点操作更优。用 node 的document的节点API需要做至少三次的插入
+//DOM树的节点操作,每次都会产生重排，这个对他的性能影响非常糟糕
+function ReverseChildren(element){ 
+    let range = new Range();//创建新的range
+    range.selectNodeContents(element);//选中node的contents
+    
+    let fragment = range.extractContents();//extract出来，此时也会创建一个fragment，里面就是 span p a……
+
+    //不需要发生重排的操作，性能高
+    var l = fragment.childNodes.length;
+    while(l-- > 0){
+        fragment.appendChild(fragment.childNodes[l]);
+    }
+    element.appendChild(fragment);
+}
+
+ReverseChildren(element); 
+</script>
+
+</body>
+</html>
